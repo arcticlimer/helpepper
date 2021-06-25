@@ -9,3 +9,4 @@ Because I wanted something simple and didn't like the other options available.
 # Requirements
 - Python `3.8+`
 - `notify-send` program in your `$PATH`.
+- `play` command (from `sox`) in your `$PATH`
