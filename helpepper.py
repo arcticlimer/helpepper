@@ -2,52 +2,44 @@
 
 from pathlib import Path
 import subprocess
-import asyncio
+import time
+import sys
 
 
-async def main():
-    await asyncio.gather(twenty_twenty(), pomodoro())
-
-
-async def twenty_twenty(n=1):
+def twenty_twenty(n=1):
     while True:
         # TODO: Different sound for this one
-        await asyncio.sleep(minutes(20))
+        time.sleep(minutes(20))
         send_notification("Look away!")
         play_sound("start_pomodoro.wav")
-        await asyncio.sleep(20)
+        time.sleep(20)
         play_sound("finish_pomodoro.wav")
         send_notification("You can look back now.")
         n += 1
 
 
-async def pomodoro(cycles=2, n=1):
+def pomodoro(cycles=2):
+    n = 1
     while True:
         play_sound("start_pomodoro.wav")
 
         send_notification("Time to work!")
-        await asyncio.sleep(minutes(25))
+        time.sleep(minutes(25))
 
         play_sound("finish_pomodoro.wav")
 
         if n % 4 == 0:
             send_notification("Long break!")
-            await asyncio.sleep(minutes(15))
+            time.sleep(minutes(15))
         else:
             send_notification("Small break!")
-            await asyncio.sleep(minutes(5))
+            time.sleep(minutes(5))
 
         if n == cycles * 4:
             send_notification("Pomodoro finished!")
             return
 
         n += 1
-
-
-def pipe(n, *funcs):
-    for f in funcs:
-        n = f(n)
-        return n
 
 
 def play_sound(filename):
@@ -66,12 +58,16 @@ def send_notification(info):
 
 
 def get_root_dir():
-    return Path(__file__).parent.parent
+    return Path(__file__).parent
 
 
 def minutes(n):
     return n * 60
 
-
 if __name__ == '__main__':
-    asyncio.run(main())
+    argv = sys.argv
+    if argv[1] == 'pomo':
+        pomodoro(int(argv[2]))
+    elif argv[1] == '2020':
+        twenty_twenty()
+
